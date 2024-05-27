@@ -1,0 +1,31 @@
+{
+  "name": "md-link-extractor",
+  "version": "1.0.0",
+  "description": "extract all the links from markdown files",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meghoshpritam/md-link-extractor.git"
+  },
+  "keywords": [
+    "md-link-extractor",
+    "link-extractor"
+  ],
+  "author": "meghoshpritam",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/meghoshpritam/md-link-extractor/issues"
+  },
+  "homepage": "https://github.com/meghoshpritam/md-link-extractor#readme",
+  "devDependencies": {
+    "eslint": "^9.3.0",
+    "eslint-config-xo": "^0.45.0",
+    "prettier": "^3.2.5"
+  },
+  "dependencies": {
+    "eslint-config-prettier": "^9.1.0"
+  }
+}
