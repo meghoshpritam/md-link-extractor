@@ -2,9 +2,9 @@
   "name": "md-link-extractor",
   "version": "1.0.0",
   "description": "extract all the links from markdown files",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -21,11 +21,14 @@
   },
   "homepage": "https://github.com/meghoshpritam/md-link-extractor#readme",
   "devDependencies": {
+    "chai": "^4.3.4",
     "eslint": "^9.3.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-config-xo": "^0.45.0",
+    "mocha": "^10.4.0",
     "prettier": "^3.2.5"
   },
   "dependencies": {
-    "eslint-config-prettier": "^9.1.0"
+    "marked": "^12.0.2"
   }
 }
