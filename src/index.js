@@ -28,6 +28,10 @@ const updateEmailLinks = (links) => {
   });
 };
 
+const isLinkOrEmail = (href) => {
+  return href.startsWith('http') || href.startsWith('/') || href.includes('@');
+};
+
 const extractMdLinks = (mdContent) => {
   const lines = mdContent.split('\n');
   const linkRegex = /.?\[([^\]]*)\]\(([^)]*)\)/g;
@@ -62,17 +66,21 @@ const extractMdLinks = (mdContent) => {
 
     for (const link of ltGtLinks) {
       const text = link.match(/<([^>]*)>/)[1]?.trim();
-      const href = text;
 
-      const linkDetails = { text, href, line, raw: link, type: 'link', format: '<>' };
-      linkInfo.push(linkDetails);
-      lineLinks.push(linkDetails);
+      if (isLinkOrEmail(text)) {
+        const href = text;
+
+        const linkDetails = { text, href, line, raw: link, type: 'link', format: '<>' };
+        linkInfo.push(linkDetails);
+        lineLinks.push(linkDetails);
+      }
     }
 
     for (const link of parenthesisLinks) {
       const raw = link.replace(/^.?\(/g, '(');
       const text = raw.match(/\(([^)]*)\)/)[1].trim();
-      if (!link.startsWith(']') && (text.startsWith('http') || text.startsWith('/'))) {
+
+      if (!link.startsWith(']') && isLinkOrEmail(text)) {
         const href = text;
 
         const linkDetails = { text, href, line, raw: raw, type: 'link', format: '()' };

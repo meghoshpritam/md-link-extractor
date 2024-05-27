@@ -84,14 +84,6 @@ describe('extractMdLinks', () => {
         format: '<>',
       },
       {
-        text: 'bit.com',
-        href: 'bit.com',
-        line: 'alternaticvely you can write link as <bit.com>\r',
-        raw: '<bit.com>',
-        type: 'link',
-        format: '<>',
-      },
-      {
         text: 'http://example.com',
         href: 'http://example.com',
         line: 'lorem ipsum http://example.com dolor sit amet, consectetur adipiscing elit\r',
