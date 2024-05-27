@@ -9,7 +9,6 @@ This package have zero dependencies.
 npm install md-link-extractor
 ```
 
-
 ## Usage
 
 ```javascript
@@ -30,8 +29,8 @@ console.log(links);
     raw: '[link](https://www.google.com)',
     type: 'link',
     format: '[]()',
-  }
-]
+  },
+];
 ```
 
 ## API

@@ -1,14 +1,16 @@
 const fs = require('fs');
-const { extractMdLinks } = require('../src');
-const chai = require('chai');
 const mocha = require('mocha');
+const chai = require('chai');
+const path = require('path');
+
+const { extractMdLinks } = require('../src');
 
 const { expect } = chai;
 const { it, describe } = mocha;
 
 describe('extractMdLinks', () => {
   it('returns an array', () => {
-    const content = fs.readFileSync(__dirname + '/test-content.md', 'utf-8');
+    const content = fs.readFileSync(path.join(__dirname, '/test-content.md'), 'utf-8');
     const result = extractMdLinks(content);
     const expectedResult = [
       {
