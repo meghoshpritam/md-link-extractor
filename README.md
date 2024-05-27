@@ -13,9 +13,9 @@ npm install md-link-extractor
 ## Usage
 
 ```javascript
-const { extractLinks } = require('md-link-extractor');
+const { extractMdLinks } = require('md-link-extractor');
 
-const links = extractLinks('# my md file\n [link](https://www.google.com)');
+const links = extractMdLinks('# my md file\n [link](https://www.google.com)');
 console.log(links);
 ```
 
@@ -36,7 +36,7 @@ console.log(links);
 
 ## API
 
-### extractLinks(markdown: string): Link[]
+### extractMdLinks(markdown: string): Link[]
 
 - `markdown` - The markdown string from which links will be extracted.
 - Returns an array of `Link` objects.
