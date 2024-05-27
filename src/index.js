@@ -22,7 +22,7 @@ const updateEmailLinks = (links) => {
 
   return links.map((link) => {
     if (link.href.match(emailRegex) || link.href.includes('@')) {
-      return { ...link, type: 'email' };
+      return { ...link, href: link.href.statsWith('mailto') ? link.href : `mailto:${link.href}`, type: 'email' };
     }
     return link;
   });
