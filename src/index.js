@@ -47,8 +47,12 @@ const extractMdLinks = (mdContent) => {
     for (const link of links) {
       if (!link.startsWith('!')) {
         const raw = link.replace(/^.?\[/g, '[');
-        const text = raw.match(/\[([^\]]*)\]/)[1].trim();
-        const href = raw.match(/\(([^)]*)\)/)[1].trim();
+        const textRegex = /\[([^\]]*)\]/;
+        const text = raw.match(textRegex)[1].trim();
+        const href = raw
+          .replace(textRegex, '')
+          .match(/\(([^)]*)\)/)[1]
+          .trim();
 
         const linkDetails = { text, href, line, raw, type: 'link', format: '[]()' };
         linkInfo.push(linkDetails);

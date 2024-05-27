@@ -60,3 +60,5 @@ send me an email at <contact@mepritam.dev>
 alternaticvely you can write link as <bit.com>
 
 lorem ipsum http://example.com dolor sit amet, consectetur adipiscing elit
+
+[Hazard Perception Test (HPT)](https://justice.act.gov.au/hazard-perception-test-hpt#:~:text=The%20Hazard%20Perception%20Test%20(HPT,dangerous%20situations%20on%20the%20road.) 
