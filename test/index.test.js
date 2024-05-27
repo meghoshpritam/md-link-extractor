@@ -79,7 +79,7 @@ describe('extractMdLinks', () => {
       },
       {
         text: 'contact@mepritam.dev',
-        href: 'contact@mepritam.dev',
+        href: 'mailto:contact@mepritam.dev',
         line: 'send me an email at <contact@mepritam.dev>\r',
         raw: '<contact@mepritam.dev>',
         type: 'email',
@@ -96,7 +96,7 @@ describe('extractMdLinks', () => {
       {
         text: 'Hazard Perception Test (HPT)',
         href: 'https://justice.act.gov.au/hazard-perception-test-hpt#:~:text=The%20Hazard%20Perception%20Test%20(HPT,dangerous%20situations%20on%20the%20road.',
-        line: '[Hazard Perception Test (HPT)](https://justice.act.gov.au/hazard-perception-test-hpt#:~:text=The%20Hazard%20Perception%20Test%20(HPT,dangerous%20situations%20on%20the%20road.) ',
+        line: '[Hazard Perception Test (HPT)](https://justice.act.gov.au/hazard-perception-test-hpt#:~:text=The%20Hazard%20Perception%20Test%20(HPT,dangerous%20situations%20on%20the%20road.)\r',
         raw: '[Hazard Perception Test (HPT)](https://justice.act.gov.au/hazard-perception-test-hpt#:~:text=The%20Hazard%20Perception%20Test%20(HPT,dangerous%20situations%20on%20the%20road.)',
         type: 'link',
         format: '[]()',

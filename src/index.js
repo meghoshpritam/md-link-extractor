@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 const isConsiderableLink = ({ link, startSyntax, endSyntax, links }) => {
   const startsWithSyntax = link.startsWith(startSyntax);
 
@@ -28,9 +29,7 @@ const updateEmailLinks = (links) => {
   });
 };
 
-const isLinkOrEmail = (href) => {
-  return href.startsWith('http') || href.startsWith('/') || href.includes('@');
-};
+const isLinkOrEmail = (href) => href.startsWith('http') || href.startsWith('/') || href.includes('@');
 
 const extractMdLinks = (mdContent) => {
   const lines = mdContent.split('\n');
@@ -83,7 +82,7 @@ const extractMdLinks = (mdContent) => {
       if (!link.startsWith(']') && isLinkOrEmail(text)) {
         const href = text;
 
-        const linkDetails = { text, href, line, raw: raw, type: 'link', format: '()' };
+        const linkDetails = { text, href, line, raw, type: 'link', format: '()' };
         linkInfo.push(linkDetails);
         lineLinks.push(linkDetails);
       }
