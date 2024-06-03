@@ -103,6 +103,49 @@ describe('extractMdLinks', () => {
       },
     ];
 
-    expect(result).to.deep.equal(expectedResult);
+    expect(result.length).to.equal(expectedResult.length);
+    for (let index = 0; index < result.length; index += 1) {
+      expect(result[index]).to.deep.equal(expectedResult[index]);
+    }
+  });
+
+  it('should return only one link with []() format', () => {
+    const content = `This is just a single line of text with a link ([useful link](http://example.com/))`;
+
+    const result = extractMdLinks(content);
+
+    const expectedResult = [
+      {
+        text: 'useful link',
+        href: 'http://example.com/',
+        line: 'This is just a single line of text with a link ([useful link](http://example.com/))',
+        raw: '[useful link](http://example.com/)',
+        type: 'link',
+        format: '[]()',
+      },
+    ];
+
+    expect(result.length).to.equal(expectedResult.length);
+    expect(result[0]).to.deep.equal(expectedResult[0]);
+  });
+
+  it('should return only one link with []() format as other links are part of the main link', () => {
+    const content = `| Available Languages | English (US and UK), along with other languages [https://learn.microsoft.com/enus/credentials/certifications/azure, fundamentals/](https://learn.microsoft.com/en, us/credentials/certifications/azure, fundamentals/) |`;
+
+    const result = extractMdLinks(content);
+
+    const expectedResult = [
+      {
+        format: '[]()',
+        href: 'https://learn.microsoft.com/en, us/credentials/certifications/azure, fundamentals/',
+        line: '| Available Languages | English (US and UK), along with other languages [https://learn.microsoft.com/enus/credentials/certifications/azure, fundamentals/](https://learn.microsoft.com/en, us/credentials/certifications/azure, fundamentals/) |',
+        text: 'https://learn.microsoft.com/enus/credentials/certifications/azure, fundamentals/',
+        raw: '[https://learn.microsoft.com/enus/credentials/certifications/azure, fundamentals/](https://learn.microsoft.com/en, us/credentials/certifications/azure, fundamentals/)',
+        type: 'link',
+      },
+    ];
+
+    expect(result.length).to.equal(expectedResult.length);
+    expect(result[0]).to.deep.equal(expectedResult[0]);
   });
 });

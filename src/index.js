@@ -1,4 +1,7 @@
 /* eslint-disable no-restricted-syntax */
+
+const escapeRegex = (string) => string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+
 const isConsiderableLink = ({ link, startSyntax, endSyntax, links }) => {
   const startsWithSyntax = link.startsWith(startSyntax);
 
@@ -30,6 +33,17 @@ const updateEmailLinks = (links) => {
 };
 
 const isLinkOrEmail = (href) => href.startsWith('http') || href.startsWith('/') || href.includes('@');
+
+const isNonConflictingLink = ({ line, url, lineLinks = [] }) => {
+  const numHrefMatch = line?.match(new RegExp(escapeRegex(url), 'g'))?.length || 0;
+  const numExistingLinks = lineLinks?.reduce(
+    (acc, lineLink) =>
+      acc + (lineLink.href.includes(url) ? 1 : 0) + (lineLink.format === '[]()' && lineLink.text.includes(url) ? 1 : 0),
+    0,
+  );
+
+  return numHrefMatch > 0 && numExistingLinks < numHrefMatch;
+};
 
 const extractMdLinks = (mdContent) => {
   const lines = mdContent.split('\n');
@@ -69,9 +83,11 @@ const extractMdLinks = (mdContent) => {
       if (isLinkOrEmail(text)) {
         const href = text;
 
-        const linkDetails = { text, href, line, raw: link, type: 'link', format: '<>' };
-        linkInfo.push(linkDetails);
-        lineLinks.push(linkDetails);
+        if (isNonConflictingLink({ line, url: href, lineLinks })) {
+          const linkDetails = { text, href, line, raw: link, type: 'link', format: '<>' };
+          linkInfo.push(linkDetails);
+          lineLinks.push(linkDetails);
+        }
       }
     }
 
@@ -82,9 +98,11 @@ const extractMdLinks = (mdContent) => {
       if (!link.startsWith(']') && isLinkOrEmail(text)) {
         const href = text;
 
-        const linkDetails = { text, href, line, raw, type: 'link', format: '()' };
-        linkInfo.push(linkDetails);
-        lineLinks.push(linkDetails);
+        if (isNonConflictingLink({ line, url: href, lineLinks })) {
+          const linkDetails = { text, href, line, raw, type: 'link', format: '()' };
+          linkInfo.push(linkDetails);
+          lineLinks.push(linkDetails);
+        }
       }
     }
 
@@ -115,10 +133,13 @@ const extractMdLinks = (mdContent) => {
         )
       ) {
         const raw = link.replace(/^.?http/g, 'http');
+        const href = raw;
 
-        const linkDetails = { text: raw, href: raw, line, raw, type: 'link', format: 'raw' };
-        linkInfo.push(linkDetails);
-        lineLinks.push(linkDetails);
+        if (isNonConflictingLink({ line, url: href, lineLinks })) {
+          const linkDetails = { text: raw, href, line, raw, type: 'link', format: 'raw' };
+          linkInfo.push(linkDetails);
+          lineLinks.push(linkDetails);
+        }
       }
     }
   }
