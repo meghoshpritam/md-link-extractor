@@ -1,5 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 
+const { maxMatchingSubstring } = require('./stringMatching');
+
 const escapeRegex = (string) => string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
 
 const isConsiderableLink = ({ link, startSyntax, endSyntax, links }) => {
@@ -43,6 +45,32 @@ const isNonConflictingLink = ({ line, url, lineLinks = [] }) => {
   );
 
   return numHrefMatch > 0 && numExistingLinks < numHrefMatch;
+};
+
+const isAllowedToAddRawLinkWithExistingSubLinkCheck = ({ line, links, link }) => {
+  let partialMatch = '';
+
+  const httpsLink = (link?.match(/https:\/\/.*/g)?.[0] || '').replace('https://', '');
+
+  for (const l of links) {
+    const linkMatch = maxMatchingSubstring(httpsLink, l.href);
+    if (linkMatch.length > partialMatch.length) {
+      partialMatch = linkMatch;
+    }
+  }
+
+  if (partialMatch.length > 0) {
+    const numMatch = line?.match(new RegExp(escapeRegex(partialMatch), 'g'))?.length || 0;
+    const numExistingLinks = links?.reduce(
+      (acc, l) =>
+        acc + (l.href.includes(partialMatch) ? 1 : 0) + (l.format === '[]()' && l.text.includes(partialMatch) ? 1 : 0),
+      0,
+    );
+
+    return numMatch > 0 && numExistingLinks < numMatch;
+  }
+
+  return true;
 };
 
 const extractMdLinks = (mdContent) => {
@@ -130,7 +158,8 @@ const extractMdLinks = (mdContent) => {
             endSyntax: syntax.end,
             links: lineLinks,
           }),
-        )
+        ) &&
+        isAllowedToAddRawLinkWithExistingSubLinkCheck({ line, links: lineLinks, link })
       ) {
         const raw = link.replace(/^.?http/g, 'http');
         const href = raw;

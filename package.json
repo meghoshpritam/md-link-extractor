@@ -1,6 +1,6 @@
 {
   "name": "md-link-extractor",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "description": "extract all the links from markdown files",
   "main": "src/index.js",
   "scripts": {

@@ -148,4 +148,24 @@ describe('extractMdLinks', () => {
     expect(result.length).to.equal(expectedResult.length);
     expect(result[0]).to.deep.equal(expectedResult[0]);
   });
+
+  it('should return only one link with []() format, the full link is inside (), it should extract only the link', () => {
+    const content = `Sulla base delle informazioni disponibili online ([Bando di Avviso Ufficiale](https://portale.inpa.gov.it/api/media/414a80e2-2b36-4da9-a8ec-6c67feaba9b7)), possiamo ricostruire una struttura generale:`;
+
+    const result = extractMdLinks(content);
+
+    const expectedResult = [
+      {
+        text: 'Bando di Avviso Ufficiale',
+        href: 'https://portale.inpa.gov.it/api/media/414a80e2-2b36-4da9-a8ec-6c67feaba9b7',
+        line: 'Sulla base delle informazioni disponibili online ([Bando di Avviso Ufficiale](https://portale.inpa.gov.it/api/media/414a80e2-2b36-4da9-a8ec-6c67feaba9b7)), possiamo ricostruire una struttura generale:',
+        raw: '[Bando di Avviso Ufficiale](https://portale.inpa.gov.it/api/media/414a80e2-2b36-4da9-a8ec-6c67feaba9b7)',
+        type: 'link',
+        format: '[]()',
+      },
+    ];
+
+    expect(result.length).to.equal(expectedResult.length);
+    expect(result[0]).to.deep.equal(expectedResult[0]);
+  });
 });
