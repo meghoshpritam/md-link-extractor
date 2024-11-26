@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 
+const { normalize } = require('./normalize');
 const { maxMatchingSubstring } = require('./stringMatching');
 
 const escapeRegex = (string) => string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
@@ -74,8 +75,9 @@ const isAllowedToAddRawLinkWithExistingSubLinkCheck = ({ line, links, link }) =>
 };
 
 const extractMdLinks = (mdContent) => {
-  const lines = mdContent.split('\n');
-  const linkRegex = /.?\[([^\]]*)\]\(([^)]*)\)/g;
+  const lines = normalize(mdContent).split('\n');
+  const linkRegex = /.?\[([^\]]*)\]\(([^\][]*)\)/g;
+
   const ltGtRegex = /<[^>]*>/g;
   const parenthesisLinkRegex = /.?\(([^)]*)\)/g;
   const rawLinkRegex = /.?https?:\/\/[^\s[;]+/g;
@@ -91,13 +93,23 @@ const extractMdLinks = (mdContent) => {
 
     for (const link of links) {
       if (!link.startsWith('!')) {
-        const raw = link.replace(/^.?\[/g, '[');
+        let raw = link?.replace(/^.?\[/g, '[') || '';
+        const nOpeningParenthesis = raw?.match(/\(/g)?.length || 0;
+        const nClosingParenthesis = raw?.match(/\)/g)?.length || 0;
+        if (nClosingParenthesis > nOpeningParenthesis) {
+          raw = raw?.replace(/\)$/g, '') || '';
+        }
+        if (raw.includes(') (')) {
+          raw = raw.replace(/\) \(.*/g, ')');
+        }
+
         const textRegex = /\[([^\]]*)\]/;
-        const text = raw.match(textRegex)[1].trim();
-        const href = raw
-          .replace(textRegex, '')
-          .match(/\(([^)]*)\)/)[1]
-          .trim();
+        const text = raw?.match(textRegex)?.[1]?.trim() || '';
+        const href =
+          raw
+            ?.replace(textRegex, '')
+            ?.match(/\(([^\][]*)\)$/)?.[1]
+            ?.trim() || '';
 
         const linkDetails = { text, href, line, raw, type: 'link', format: '[]()' };
         linkInfo.push(linkDetails);

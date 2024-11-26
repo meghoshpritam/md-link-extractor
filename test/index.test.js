@@ -16,7 +16,7 @@ describe('extractMdLinks', () => {
       {
         text: 'ff',
         href: '',
-        line: '[ff]() [](ds) []()\r',
+        line: '[ff]() [](ds) []()',
         raw: '[ff]()',
         type: 'link',
         format: '[]()',
@@ -24,7 +24,7 @@ describe('extractMdLinks', () => {
       {
         text: '',
         href: 'ds',
-        line: '[ff]() [](ds) []()\r',
+        line: '[ff]() [](ds) []()',
         raw: '[](ds)',
         type: 'link',
         format: '[]()',
@@ -32,7 +32,7 @@ describe('extractMdLinks', () => {
       {
         text: '',
         href: '',
-        line: '[ff]() [](ds) []()\r',
+        line: '[ff]() [](ds) []()',
         raw: '[]()',
         type: 'link',
         format: '[]()',
@@ -40,7 +40,7 @@ describe('extractMdLinks', () => {
       {
         text: 'fhd',
         href: 'https://www.google.com',
-        line: '- Lorem ipsum dolor sit amet, consectetur adipiscing elit [fhd](https://www.google.com)\r',
+        line: '- Lorem ipsum dolor sit amet, consectetur adipiscing elit [fhd](https://www.google.com)',
         raw: '[fhd](https://www.google.com)',
         type: 'link',
         format: '[]()',
@@ -48,7 +48,7 @@ describe('extractMdLinks', () => {
       {
         text: 'fb',
         href: 'https://www.google.com',
-        line: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus rem eveniet porro sapiente vel dignissimos nobis blanditiis perferendis! Libero totam in delectus deleniti asperiores minima est dolores nobis, facere nostrum. [fb](https://www.google.com) (https://meta.com)\r',
+        line: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus rem eveniet porro sapiente vel dignissimos nobis blanditiis perferendis! Libero totam in delectus deleniti asperiores minima est dolores nobis, facere nostrum. [fb](https://www.google.com) (https://meta.com)',
         raw: '[fb](https://www.google.com)',
         type: 'link',
         format: '[]()',
@@ -56,7 +56,7 @@ describe('extractMdLinks', () => {
       {
         text: 'https://meta.com',
         href: 'https://meta.com',
-        line: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus rem eveniet porro sapiente vel dignissimos nobis blanditiis perferendis! Libero totam in delectus deleniti asperiores minima est dolores nobis, facere nostrum. [fb](https://www.google.com) (https://meta.com)\r',
+        line: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus rem eveniet porro sapiente vel dignissimos nobis blanditiis perferendis! Libero totam in delectus deleniti asperiores minima est dolores nobis, facere nostrum. [fb](https://www.google.com) (https://meta.com)',
         raw: '(https://meta.com)',
         type: 'link',
         format: '()',
@@ -64,7 +64,7 @@ describe('extractMdLinks', () => {
       {
         text: '/profile',
         href: '/profile',
-        line: 'accessing profile page (/profile)\r',
+        line: 'accessing profile page (/profile)',
         raw: '(/profile)',
         type: 'link',
         format: '()',
@@ -72,7 +72,7 @@ describe('extractMdLinks', () => {
       {
         text: 'https://mepritam.dev',
         href: 'https://mepritam.dev',
-        line: '<https://mepritam.dev>\r',
+        line: '<https://mepritam.dev>',
         raw: '<https://mepritam.dev>',
         type: 'link',
         format: '<>',
@@ -80,7 +80,7 @@ describe('extractMdLinks', () => {
       {
         text: 'contact@mepritam.dev',
         href: 'mailto:contact@mepritam.dev',
-        line: 'send me an email at <contact@mepritam.dev>\r',
+        line: 'send me an email at <contact@mepritam.dev>',
         raw: '<contact@mepritam.dev>',
         type: 'email',
         format: '<>',
@@ -88,7 +88,7 @@ describe('extractMdLinks', () => {
       {
         text: 'http://example.com',
         href: 'http://example.com',
-        line: 'lorem ipsum http://example.com dolor sit amet, consectetur adipiscing elit\r',
+        line: 'lorem ipsum http://example.com dolor sit amet, consectetur adipiscing elit',
         raw: 'http://example.com',
         type: 'link',
         format: 'raw',
@@ -96,7 +96,7 @@ describe('extractMdLinks', () => {
       {
         text: 'Hazard Perception Test (HPT)',
         href: 'https://justice.act.gov.au/hazard-perception-test-hpt#:~:text=The%20Hazard%20Perception%20Test%20(HPT,dangerous%20situations%20on%20the%20road.',
-        line: '[Hazard Perception Test (HPT)](https://justice.act.gov.au/hazard-perception-test-hpt#:~:text=The%20Hazard%20Perception%20Test%20(HPT,dangerous%20situations%20on%20the%20road.)\r',
+        line: '[Hazard Perception Test (HPT)](https://justice.act.gov.au/hazard-perception-test-hpt#:~:text=The%20Hazard%20Perception%20Test%20(HPT,dangerous%20situations%20on%20the%20road.)',
         raw: '[Hazard Perception Test (HPT)](https://justice.act.gov.au/hazard-perception-test-hpt#:~:text=The%20Hazard%20Perception%20Test%20(HPT,dangerous%20situations%20on%20the%20road.)',
         type: 'link',
         format: '[]()',
@@ -133,6 +133,7 @@ describe('extractMdLinks', () => {
     const content = `| Available Languages | English (US and UK), along with other languages [https://learn.microsoft.com/enus/credentials/certifications/azure, fundamentals/](https://learn.microsoft.com/en, us/credentials/certifications/azure, fundamentals/) |`;
 
     const result = extractMdLinks(content);
+    console.log('🚀[index.test.js:137]: result: ', result);
 
     const expectedResult = [
       {
@@ -160,6 +161,26 @@ describe('extractMdLinks', () => {
         href: 'https://portale.inpa.gov.it/api/media/414a80e2-2b36-4da9-a8ec-6c67feaba9b7',
         line: 'Sulla base delle informazioni disponibili online ([Bando di Avviso Ufficiale](https://portale.inpa.gov.it/api/media/414a80e2-2b36-4da9-a8ec-6c67feaba9b7)), possiamo ricostruire una struttura generale:',
         raw: '[Bando di Avviso Ufficiale](https://portale.inpa.gov.it/api/media/414a80e2-2b36-4da9-a8ec-6c67feaba9b7)',
+        type: 'link',
+        format: '[]()',
+      },
+    ];
+
+    expect(result.length).to.equal(expectedResult.length);
+    expect(result[0]).to.deep.equal(expectedResult[0]);
+  });
+
+  it('should return extract the full link along with the () in the URL', () => {
+    const content = `check out related quizzes or [PDF National Strength and Conditioning Association (NSCA) CPSS](/en/pdf/national-strength-and-conditioning-association-(nsca)-pdf/cpss-pdf/).`;
+
+    const result = extractMdLinks(content);
+
+    const expectedResult = [
+      {
+        text: 'PDF National Strength and Conditioning Association (NSCA) CPSS',
+        href: '/en/pdf/national-strength-and-conditioning-association-(nsca)-pdf/cpss-pdf/',
+        line: 'check out related quizzes or [PDF National Strength and Conditioning Association (NSCA) CPSS](/en/pdf/national-strength-and-conditioning-association-(nsca)-pdf/cpss-pdf/).',
+        raw: '[PDF National Strength and Conditioning Association (NSCA) CPSS](/en/pdf/national-strength-and-conditioning-association-(nsca)-pdf/cpss-pdf/)',
         type: 'link',
         format: '[]()',
       },
