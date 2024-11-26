@@ -133,7 +133,6 @@ describe('extractMdLinks', () => {
     const content = `| Available Languages | English (US and UK), along with other languages [https://learn.microsoft.com/enus/credentials/certifications/azure, fundamentals/](https://learn.microsoft.com/en, us/credentials/certifications/azure, fundamentals/) |`;
 
     const result = extractMdLinks(content);
-    console.log('🚀[index.test.js:137]: result: ', result);
 
     const expectedResult = [
       {
