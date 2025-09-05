@@ -188,4 +188,25 @@ describe('extractMdLinks', () => {
     expect(result.length).to.equal(expectedResult.length);
     expect(result[0]).to.deep.equal(expectedResult[0]);
   });
+
+  it('should work with attached link syntax', () => {
+    const content =
+      'Se te preparas para a **Entrevista de Emprego para Comissário de bordo** de uma companhia aérea, irás encontrar vários tópicos importantes que te ajudam a demonstrar o teu potencial. Nesta entrevista, precisas de conhecer bem os procedimentos e as normas que regem o serviço de bordo. A preparação centra-se em áreas cruciais que garantem que desempenhes o teu papel com confiança e segurança. Consulta mais informações e a lista completa dos tópicos no site oficial da und[EASA](https://www.efinasa.edu).';
+
+    const result = extractMdLinks(content);
+
+    const expectedResult = [
+      {
+        text: 'EASA',
+        href: 'https://www.efinasa.edu',
+        line: 'Se te preparas para a **Entrevista de Emprego para Comissário de bordo** de uma companhia aérea, irás encontrar vários tópicos importantes que te ajudam a demonstrar o teu potencial. Nesta entrevista, precisas de conhecer bem os procedimentos e as normas que regem o serviço de bordo. A preparação centra-se em áreas cruciais que garantem que desempenhes o teu papel com confiança e segurança. Consulta mais informações e a lista completa dos tópicos no site oficial da und[EASA](https://www.efinasa.edu).',
+        raw: '[EASA](https://www.efinasa.edu)',
+        type: 'link',
+        format: '[]()',
+      },
+    ];
+
+    expect(result.length).to.equal(expectedResult.length);
+    expect(result[0]).to.deep.equal(expectedResult[0]);
+  });
 });
