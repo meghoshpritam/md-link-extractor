@@ -1,11 +1,21 @@
 /* eslint-disable no-restricted-syntax */
+import { normalize } from './normalize';
+import { maxMatchingSubstring } from './stringMatching';
+import type { Link } from './types';
 
-const { normalize } = require('./normalize');
-const { maxMatchingSubstring } = require('./stringMatching');
+const escapeRegex = (string: string) => string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
 
-const escapeRegex = (string) => string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
-
-const isConsiderableLink = ({ link, startSyntax, endSyntax, links }) => {
+const isConsiderableLink = ({
+  link,
+  startSyntax,
+  endSyntax,
+  links,
+}: {
+  link: string;
+  startSyntax: string;
+  endSyntax: string;
+  links: Link[];
+}): boolean => {
   const startsWithSyntax = link.startsWith(startSyntax);
 
   if (startsWithSyntax) {
@@ -24,20 +34,32 @@ const isConsiderableLink = ({ link, startSyntax, endSyntax, links }) => {
   return true;
 };
 
-const updateEmailLinks = (links) => {
+const updateEmailLinks = (links: Link[]): Link[] => {
   const emailRegex = /mailto:([^\s[;]+)/g;
 
   return links.map((link) => {
     if (link.href.match(emailRegex) || link.href.includes('@')) {
-      return { ...link, href: link.href.startsWith('mailto') ? link.href : `mailto:${link.href}`, type: 'email' };
+      return {
+        ...link,
+        href: link.href.startsWith('mailto') ? link.href : `mailto:${link.href}`,
+        type: 'email',
+      } as Link;
     }
     return link;
   });
 };
 
-const isLinkOrEmail = (href) => href.startsWith('http') || href.startsWith('/') || href.includes('@');
+const isLinkOrEmail = (href: string): boolean => href.startsWith('http') || href.startsWith('/') || href.includes('@');
 
-const isNonConflictingLink = ({ line, url, lineLinks = [] }) => {
+const isNonConflictingLink = ({
+  line,
+  url,
+  lineLinks = [],
+}: {
+  line: string;
+  url: string;
+  lineLinks?: Link[];
+}): boolean => {
   const numHrefMatch = line?.match(new RegExp(escapeRegex(url), 'g'))?.length || 0;
   const numExistingLinks = lineLinks?.reduce(
     (acc, lineLink) =>
@@ -48,7 +70,15 @@ const isNonConflictingLink = ({ line, url, lineLinks = [] }) => {
   return numHrefMatch > 0 && numExistingLinks < numHrefMatch;
 };
 
-const isAllowedToAddRawLinkWithExistingSubLinkCheck = ({ line, links, link }) => {
+const isAllowedToAddRawLinkWithExistingSubLinkCheck = ({
+  line,
+  links,
+  link,
+}: {
+  line: string;
+  links: Link[];
+  link: string;
+}): boolean => {
   let partialMatch = '';
 
   const httpsLink = (link?.match(/https:\/\/.*/g)?.[0] || '').replace('https://', '');
@@ -74,7 +104,7 @@ const isAllowedToAddRawLinkWithExistingSubLinkCheck = ({ line, links, link }) =>
   return true;
 };
 
-const extractMdLinks = (mdContent) => {
+export const extractMdLinks = (mdContent: string): Link[] => {
   const lines = normalize(mdContent).split('\n');
   const linkRegex = /.?\[([^\]]*)\]\(([^\][]*)\)/g;
 
@@ -82,14 +112,14 @@ const extractMdLinks = (mdContent) => {
   const parenthesisLinkRegex = /.?\(([^)]*)\)/g;
   const rawLinkRegex = /.?https?:\/\/[^\s[;]+/g;
 
-  const linkInfo = [];
+  const linkInfo: Link[] = [];
 
   for (const line of lines) {
     const links = line.match(linkRegex) || [];
     const ltGtLinks = line.match(ltGtRegex) || [];
     const parenthesisLinks = line.match(parenthesisLinkRegex) || [];
     const rawLinks = line.match(rawLinkRegex) || [];
-    const lineLinks = [];
+    const lineLinks: Link[] = [];
 
     for (const link of links) {
       if (!link.startsWith('!')) {
@@ -120,27 +150,23 @@ const extractMdLinks = (mdContent) => {
         }
 
         const textRegex = /\[([^\]]*)\]/;
-        const text = balancedRaw?.match(textRegex)?.[1]?.trim() || '';
-        const href =
-          balancedRaw
-            ?.replace(textRegex, '')
-            ?.match(/\(([^\][]*)\)$/)?.[1]
-            ?.trim() || '';
+        const text = (balancedRaw?.match(textRegex)?.[1] || '').trim();
+        const href = (balancedRaw?.replace(textRegex, '')?.match(/\(([^\][]*)\)$/)?.[1] || '').trim();
 
-        const linkDetails = { text, href, line, raw: balancedRaw, type: 'link', format: '[]()' };
+        const linkDetails: Link = { text, href, line, raw: balancedRaw, type: 'link', format: '[]()' };
         linkInfo.push(linkDetails);
         lineLinks.push(linkDetails);
       }
     }
 
     for (const link of ltGtLinks) {
-      const text = link.match(/<([^>]*)>/)[1]?.trim();
+      const text = (link.match(/<([^>]*)>/)?.[1] || '').trim();
 
       if (isLinkOrEmail(text)) {
         const href = text;
 
         if (isNonConflictingLink({ line, url: href, lineLinks })) {
-          const linkDetails = { text, href, line, raw: link, type: 'link', format: '<>' };
+          const linkDetails: Link = { text, href, line, raw: link, type: 'link', format: '<>' };
           linkInfo.push(linkDetails);
           lineLinks.push(linkDetails);
         }
@@ -149,13 +175,14 @@ const extractMdLinks = (mdContent) => {
 
     for (const link of parenthesisLinks) {
       const raw = link.replace(/^.?\(/g, '(');
-      const text = raw.match(/\(([^)]*)\)/)[1].trim();
+      const match = raw.match(/\(([^)]*)\)/);
+      const text = (match?.[1] || '').trim();
 
       if (!link.startsWith(']') && isLinkOrEmail(text)) {
         const href = text;
 
         if (isNonConflictingLink({ line, url: href, lineLinks })) {
-          const linkDetails = { text, href, line, raw, type: 'link', format: '()' };
+          const linkDetails: Link = { text, href, line, raw, type: 'link', format: '()' };
           linkInfo.push(linkDetails);
           lineLinks.push(linkDetails);
         }
@@ -193,7 +220,7 @@ const extractMdLinks = (mdContent) => {
         const href = raw;
 
         if (isNonConflictingLink({ line, url: href, lineLinks })) {
-          const linkDetails = { text: raw, href, line, raw, type: 'link', format: 'raw' };
+          const linkDetails: Link = { text: raw, href, line, raw, type: 'link', format: 'raw' };
           linkInfo.push(linkDetails);
           lineLinks.push(linkDetails);
         }
@@ -204,6 +231,8 @@ const extractMdLinks = (mdContent) => {
   return updateEmailLinks(linkInfo);
 };
 
-module.exports = {
-  extractMdLinks,
-};
+export type { Link } from './types';
+export { normalize } from './normalize';
+export { maxMatchingSubstring } from './stringMatching';
+
+export default extractMdLinks;

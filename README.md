@@ -12,9 +12,16 @@ npm install md-link-extractor
 ## Usage
 
 ```javascript
+// JavaScript (CommonJS)
 const { extractMdLinks } = require('md-link-extractor');
-
 const links = extractMdLinks('# my md file\n [link](https://www.google.com)');
+console.log(links);
+```
+
+```ts
+// TypeScript / ESM
+import { extractMdLinks, type Link } from 'md-link-extractor';
+const links: Link[] = extractMdLinks('# my md file\n [link](https://www.google.com)');
 console.log(links);
 ```
 

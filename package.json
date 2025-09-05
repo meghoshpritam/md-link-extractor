@@ -1,13 +1,18 @@
 {
   "name": "md-link-extractor",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "extract all the links from markdown files",
-  "main": "src/index.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "types/index.d.ts",
   "scripts": {
     "format": "prettier --write .",
-    "lint": "eslint .",
-    "prepublishOnly": "npm i && npm run lint && npm run test",
-    "test": "mocha test/*.test.js"
+    "lint": "eslint . --ext .js,.ts",
+    "build": "npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "prepublishOnly": "npm i && npm run lint && npm run build && npm test",
+    "test": "npm run build:esm && NODE_OPTIONS='--experimental-specifier-resolution=node --loader=./node_modules/ts-node/esm.mjs' mocha --extension mts test/*.test.mts"
   },
   "repository": {
     "type": "git",
@@ -26,15 +31,22 @@
   },
   "homepage": "https://github.com/meghoshpritam/md-link-extractor#readme",
   "devDependencies": {
-    "chai": "^4.3.4",
+    "chai": "^6.0.1",
     "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.29.1",
-    "husky": "^9.0.11",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "@typescript-eslint/eslint-plugin": "^8.42.0",
+    "@typescript-eslint/parser": "^8.42.0",
+    "husky": "^9.1.7",
     "lint-staged": "^15.2.5",
-    "mocha": "^10.4.0",
-    "prettier": "^3.2.5"
+    "mocha": "^11.7.2",
+    "prettier": "^3.2.5",
+    "@types/chai": "^5.2.2",
+    "@types/mocha": "^10.0.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
   },
   "husky": {
     "hooks": {
@@ -43,9 +55,22 @@
     }
   },
   "lint-staged": {
-    "*.js": [
+    "*.{js,ts}": [
       "npm run lint",
       "git add"
     ]
+  },
+  "files": [
+    "dist",
+    "types",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    }
   }
 }

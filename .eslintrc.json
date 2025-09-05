@@ -19,5 +19,43 @@
     "no-console": "error",
     "no-unused-labels": "error",
     "no-unused-vars": "error"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.ts"],
+      "parser": "@typescript-eslint/parser",
+      "plugins": ["@typescript-eslint"],
+      "extends": ["airbnb-base", "plugin:@typescript-eslint/recommended", "plugin:import/typescript", "prettier"],
+      "parserOptions": {
+        "sourceType": "module",
+        "ecmaVersion": "latest"
+      },
+      "rules": {
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+        "no-shadow": "off",
+        "@typescript-eslint/no-shadow": "off",
+        "no-use-before-define": "off",
+        "@typescript-eslint/no-use-before-define": "off",
+        "import/extensions": [
+          "error",
+          "ignorePackages",
+          {
+            "js": "never",
+            "ts": "never"
+          }
+        ]
+      }
+    }
+  ],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".ts"]
+      },
+      "typescript": {
+        "alwaysTryTypes": true
+      }
+    }
   }
 }

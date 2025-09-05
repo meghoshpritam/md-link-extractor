@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2019",
+    "moduleResolution": "Node",
+    "rootDir": "src",
+    "strict": true,
+    "noImplicitAny": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": false,
+    "newLine": "LF"
+  },
+  "include": ["src/**/*"]
+}

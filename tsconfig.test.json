@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "rootDir": ".",
+    "allowImportingTsExtensions": true,
+    "types": ["mocha", "node"],
+    "noEmit": true,
+    "moduleResolution": "nodenext"
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts", "test/**/*.mts"]
+}

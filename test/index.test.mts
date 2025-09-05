@@ -1,12 +1,12 @@
-const fs = require('fs');
-const mocha = require('mocha');
-const chai = require('chai');
-const path = require('path');
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { describe, it } from 'mocha';
+import { expect } from 'chai';
 
-const { extractMdLinks } = require('../src');
+import { extractMdLinks } from '../dist/esm/index.js';
 
-const { expect } = chai;
-const { it, describe } = mocha;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 describe('extractMdLinks', () => {
   it('returns an array', () => {
