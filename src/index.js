@@ -93,25 +93,41 @@ const extractMdLinks = (mdContent) => {
 
     for (const link of links) {
       if (!link.startsWith('!')) {
-        let raw = link?.replace(/^.?\[/g, '[') || '';
-        const nOpeningParenthesis = raw?.match(/\(/g)?.length || 0;
-        const nClosingParenthesis = raw?.match(/\)/g)?.length || 0;
-        if (nClosingParenthesis > nOpeningParenthesis) {
-          raw = raw?.replace(/\)$/g, '') || '';
-        }
-        if (raw.includes(') (')) {
-          raw = raw.replace(/\) \(.*/g, ')');
+        const raw = link?.replace(/^.?\[/g, '[') || '';
+
+        const textStart = raw.indexOf('[');
+        const textEnd = raw.indexOf(']', textStart + 1);
+        let balancedRaw = raw;
+
+        if (textStart !== -1 && textEnd !== -1 && raw[textEnd + 1] === '(') {
+          const hrefStart = textEnd + 1; // at '('
+          let depth = 0;
+          let hrefEnd = -1;
+          for (let i = hrefStart; i < raw.length; i += 1) {
+            const ch = raw[i];
+            if (ch === '(') depth += 1;
+            else if (ch === ')') {
+              depth -= 1;
+              if (depth === 0) {
+                hrefEnd = i;
+                break;
+              }
+            }
+          }
+          if (hrefEnd !== -1) {
+            balancedRaw = raw.slice(0, hrefEnd + 1);
+          }
         }
 
         const textRegex = /\[([^\]]*)\]/;
-        const text = raw?.match(textRegex)?.[1]?.trim() || '';
+        const text = balancedRaw?.match(textRegex)?.[1]?.trim() || '';
         const href =
-          raw
+          balancedRaw
             ?.replace(textRegex, '')
             ?.match(/\(([^\][]*)\)$/)?.[1]
             ?.trim() || '';
 
-        const linkDetails = { text, href, line, raw, type: 'link', format: '[]()' };
+        const linkDetails = { text, href, line, raw: balancedRaw, type: 'link', format: '[]()' };
         linkInfo.push(linkDetails);
         lineLinks.push(linkDetails);
       }
