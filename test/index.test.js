@@ -12,7 +12,7 @@ describe('extractMdLinks', () => {
   it('returns an array', () => {
     const content = fs.readFileSync(path.join(__dirname, '/test-content.md'), 'utf-8');
     const result = extractMdLinks(content);
-    const expectedResult = [
+    const expectedResults = [
       {
         text: 'ff',
         href: '',
@@ -103,10 +103,10 @@ describe('extractMdLinks', () => {
       },
     ];
 
-    expect(result.length).to.equal(expectedResult.length);
-    for (let index = 0; index < result.length; index += 1) {
-      expect(result[index]).to.deep.equal(expectedResult[index]);
-    }
+    expect(result.length).to.equal(expectedResults.length);
+    expectedResults.forEach((expectedResult, index) => {
+      expect(result[index]).to.deep.equal(expectedResult);
+    });
   });
 
   it('should return only one link with []() format', () => {
@@ -114,7 +114,7 @@ describe('extractMdLinks', () => {
 
     const result = extractMdLinks(content);
 
-    const expectedResult = [
+    const expectedResults = [
       {
         text: 'useful link',
         href: 'http://example.com/',
@@ -125,8 +125,10 @@ describe('extractMdLinks', () => {
       },
     ];
 
-    expect(result.length).to.equal(expectedResult.length);
-    expect(result[0]).to.deep.equal(expectedResult[0]);
+    expect(result.length).to.equal(expectedResults.length);
+    expectedResults.forEach((expectedResult, index) => {
+      expect(result[index]).to.deep.equal(expectedResult);
+    });
   });
 
   it('should return only one link with []() format as other links are part of the main link', () => {
@@ -134,7 +136,7 @@ describe('extractMdLinks', () => {
 
     const result = extractMdLinks(content);
 
-    const expectedResult = [
+    const expectedResults = [
       {
         format: '[]()',
         href: 'https://learn.microsoft.com/en, us/credentials/certifications/azure, fundamentals/',
@@ -145,8 +147,10 @@ describe('extractMdLinks', () => {
       },
     ];
 
-    expect(result.length).to.equal(expectedResult.length);
-    expect(result[0]).to.deep.equal(expectedResult[0]);
+    expect(result.length).to.equal(expectedResults.length);
+    expectedResults.forEach((expectedResult, index) => {
+      expect(result[index]).to.deep.equal(expectedResult);
+    });
   });
 
   it('should return only one link with []() format, the full link is inside (), it should extract only the link', () => {
@@ -154,7 +158,7 @@ describe('extractMdLinks', () => {
 
     const result = extractMdLinks(content);
 
-    const expectedResult = [
+    const expectedResults = [
       {
         text: 'Bando di Avviso Ufficiale',
         href: 'https://portale.inpa.gov.it/api/media/414a80e2-2b36-4da9-a8ec-6c67feaba9b7',
@@ -165,8 +169,10 @@ describe('extractMdLinks', () => {
       },
     ];
 
-    expect(result.length).to.equal(expectedResult.length);
-    expect(result[0]).to.deep.equal(expectedResult[0]);
+    expect(result.length).to.equal(expectedResults.length);
+    expectedResults.forEach((expectedResult, index) => {
+      expect(result[index]).to.deep.equal(expectedResult);
+    });
   });
 
   it('should return extract the full link along with the () in the URL', () => {
@@ -174,7 +180,7 @@ describe('extractMdLinks', () => {
 
     const result = extractMdLinks(content);
 
-    const expectedResult = [
+    const expectedResults = [
       {
         text: 'PDF National Strength and Conditioning Association (NSCA) CPSS',
         href: '/en/pdf/national-strength-and-conditioning-association-(nsca)-pdf/cpss-pdf/',
@@ -185,8 +191,10 @@ describe('extractMdLinks', () => {
       },
     ];
 
-    expect(result.length).to.equal(expectedResult.length);
-    expect(result[0]).to.deep.equal(expectedResult[0]);
+    expect(result.length).to.equal(expectedResults.length);
+    expectedResults.forEach((expectedResult, index) => {
+      expect(result[index]).to.deep.equal(expectedResult);
+    });
   });
 
   it('should work with attached link syntax', () => {
@@ -195,7 +203,7 @@ describe('extractMdLinks', () => {
 
     const result = extractMdLinks(content);
 
-    const expectedResult = [
+    const expectedResults = [
       {
         text: 'EASA',
         href: 'https://www.efinasa.edu',
@@ -206,7 +214,30 @@ describe('extractMdLinks', () => {
       },
     ];
 
-    expect(result.length).to.equal(expectedResult.length);
-    expect(result[0]).to.deep.equal(expectedResult[0]);
+    expect(result.length).to.equal(expectedResults.length);
+    expectedResults.forEach((expectedResult, index) => {
+      expect(result[index]).to.deep.equal(expectedResult);
+    });
+  });
+
+  it('should extract a link with parentheses in the text', () => {
+    const content = `In this article, you are going to delve into practical strategies and insights designed to boost your [Certification Exam - AWS Certified Solutions Architect - Associate (SAA-C02) (AWS-Solutions-Associate日本語版)](/en/buy.html?super_category=dumps&category=amazon-exam&product=aws-solutions-associate-jp-dumps) readiness with a reliable **AWS Certified Solutions Architect - Associate (SAA-C02) Practice Test** at your disposal. You will learn actionable tips, study techniques, and even enjoy a few humorous analogies that compare exam preparation to assembling a quirky piece of flat-packed furniture.`;
+    const result = extractMdLinks(content);
+
+    const expectedResults = [
+      {
+        text: 'Certification Exam - AWS Certified Solutions Architect - Associate (SAA-C02) (AWS-Solutions-Associate日本語版)',
+        href: '/en/buy.html?super_category=dumps&category=amazon-exam&product=aws-solutions-associate-jp-dumps',
+        line: content,
+        raw: '[Certification Exam - AWS Certified Solutions Architect - Associate (SAA-C02) (AWS-Solutions-Associate日本語版)](/en/buy.html?super_category=dumps&category=amazon-exam&product=aws-solutions-associate-jp-dumps)',
+        type: 'link',
+        format: '[]()',
+      },
+    ];
+
+    expect(result.length).to.equal(expectedResults.length);
+    expectedResults.forEach((expectedResult, index) => {
+      expect(result[index]).to.deep.equal(expectedResult);
+    });
   });
 });
